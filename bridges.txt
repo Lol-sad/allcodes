@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+ 
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=100005;
+int n,m,x,y,low[M],disc[M],ds[M],e,idx,pidx;
+ll mx;
+bool vis[M];
+vector<vector<pair<int,int> > >v;
+set<pair<int,int> >st;
+void bridges(int i,int p){
+    vis[i]=true;
+    disc[i]=low[i]=e++;
+    for(int j=0;j<v[i].size();j++){
+        int u=v[i][j].first;
+        if(!vis[u]){
+            bridges(u,i);
+            low[i]=min(low[i],low[u]);
+            if(disc[i]<low[u])st.insert(mp(min(i,u),max(i,u)));
+ 
+        }
+        else if(u!=p)
+            low[i]=min(low[i],disc[u]);
+ 
+    }
+}
+int main(){
+    scanf("%d%d",&n,&m);
+    v.resize(n+1);
+    for(int i=0;i<m;i++){
+        int x,y,z;
+        scanf("%d%d%d",&x,&y,&z);
+        v[x].pb(mp(y,z));
+        v[y].pb(mp(x,z));
+    }
+    bridges(1,0);
+    return 0;
+}

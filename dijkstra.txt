@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=100005;
+int n,m,x,y,z;
+ll sum,k,cost[M];
+bool vis[M];
+vector<vector<pair<int,int> > >v;
+void dijk(){
+	priority_queue<pair<ll,int> >q;
+	q.push(mp(0,x));
+	cost[x]=0;
+	while(!q.empty()){
+		ll k=q.top().first;
+		int node=q.top().second;
+		q.pop();
+		if(vis[node])continue;
+		vis[node]=true;
+		if(node==y)break;
+		for(int i=0;i<v[node].size();i++){
+			int u=v[node][i].first,k=-v[node][i].second;
+			if(!vis[u]&&cost[u]<k+cost[node]){
+				cost[u]=k+cost[node];
+				q.push(mp(cost[u],u));
+			}
+		}
+	}
+}
+int main(){
+	cin>>n>>m;
+	v.clear();
+	v.resize(n+1);
+	for(int i=0;i<m;i++){
+		scanf("%d%d%d",&x,&y,&z);
+		v[x].pb(mp(y,z));
+		v[y].pb(mp(x,z));
+	}
+	for(int i=1;i<=n;i++)cost[i]=-1e18;
+	cin>>x>>y;
+	dijk();
+	if(!vis[y])puts("NO");
+	else printf("%lld\n",-cost[y]);
+}

@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=100005;
+int n,m,x,y,z,ds[M];
+ll sum,k;
+struct cow{
+	int x,y,cst;
+	cow(int a,int b,int c){
+		x=a;y=b;cst=c;
+	}
+	bool operator <(const cow &a) const{
+		return cst>a.cst;
+	}
+};
+int get(int i){
+	if(ds[i]==i)return i;
+	return ds[i]=get(ds[i]);
+}
+priority_queue<cow>q;
+int main(){
+	cin>>n>>m;
+	for(int i=1;i<=n;i++)ds[i]=i;
+	for(int i=0;i<m;i++){
+		scanf("%d%d%d",&x,&y,&z);
+		q.push(cow(x,y,z));
+	}
+	while(!q.empty()){
+		int x=q.top().x,y=q.top().y,k=q.top().cst;
+		q.pop();
+		if(get(x)==get(y))continue;
+		ds[get(x)]=get(y);
+		sum+=k;
+	}
+	cout<<sum;
+}

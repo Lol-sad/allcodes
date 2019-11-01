@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+ 
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=100005;
+int n,q,m,sq,a[M],ans[M],freq[2*M],freq2[M],mx;
+struct cow{
+ 
+    int l,r,idx;
+    cow(int a,int b,int c){
+        l=a;r=b;idx=c;
+    }
+    bool operator <(const cow &a){
+        if(l/sq!=a.l/sq)
+            return l<a.l;
+ 
+        return r>a.r;
+    }
+ 
+};
+vector<cow>qr;
+void add(int i){
+    freq2[freq[a[i]]]--;
+    freq[a[i]]++;
+    freq2[freq[a[i]]]++;
+    mx=max(mx,freq[a[i]]);
+}
+ 
+void rem(int i){
+    freq2[freq[a[i]]]--;
+    if(!freq2[freq[a[i]]]&&freq[a[i]]==mx)mx--;
+    freq[a[i]]--;
+    freq2[freq[a[i]]]++;
+    mx=max(mx,freq[a[i]]);
+}
+int main()
+{
+    while(1){
+        cin>>n;
+        if(!n)break;
+        scanf("%d",&q);
+        sq=sqrt(n)+1;
+        qr.clear();
+        memset(freq,0,sizeof freq);
+        memset(freq2,0,sizeof freq2);
+        freq2[0]=n;
+        for(int i=0;i<n;i++){
+            scanf("%d",&a[i]);
+            a[i]+=M;
+        }
+        for(int i=0;i<q;i++){
+            int l,r;
+            scanf("%d%d",&l,&r);
+            l--;r--;
+            qr.pb(cow(l,r,i));
+        }
+        sort(qr.begin(),qr.end());
+        int l=0,r=-1;
+        mx=0;
+        for(int i=0;i<q;i++){
+            while(r<qr[i].r)add(++r);
+            while(l>qr[i].l)add(--l);
+            while(r>qr[i].r)rem(r--);
+            while(l<qr[i].l)rem(l++);
+            ans[qr[i].idx]=mx;
+        }
+        for(int i=0;i<q;i++)printf("%d\n",ans[i]);
+    }
+    return 0;
+}
+ 

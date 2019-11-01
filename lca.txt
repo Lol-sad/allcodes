@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+ 
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=1001;
+int n,m,x,y;
+int dp[M][20],d[M];
+vector<vector<int> >v;
+void dfs(int i,int p,int dd){
+    dp[i][0]=p;
+    d[i]=dd;
+    for(int j=0;j<v[i].size();j++){
+        if(v[i][j]==p)continue;
+        dfs(v[i][j],i,dd+1);
+    }
+ 
+}
+int lca(int x,int y){
+ 
+    if(d[x]<d[y])swap(x,y);
+    int diff=d[x]-d[y];
+    for(int i=0;i<20;i++)
+        if((1<<i)&diff)
+            x=dp[x][i];
+ 
+    if(x==y)return x;
+ 
+    for(int i=19;i>=0;i--)
+        if(dp[x][i]!=dp[y][i]){
+            x=dp[x][i],y=dp[y][i];
+        }
+    return dp[x][0];
+}
+int main(){
+    cin>>n;
+    v.resize(n+1);
+    for(int i=1;i<n;i++){
+        scanf("%d%d",&x,&y);
+        v[x].pb(y);
+        v[y].pb(x);
+    }
+    dfs(1,-1,0);
+    for(int d=1;d<20;d++){
+        for(int u=1;u<=n;u++){
+            if(dp[u][d-1]==-1)dp[u][d]=-1;
+            else dp[u][d]=dp[dp[u][d-1]][d-1];
+        }
+    }
+    int q;
+    cin>>q;
+    while(q--){
+        scanf("%d %d",&x,&y);
+        printf("%d\n",lca(x,y));
+    }
+    return 0;
+}
+ 

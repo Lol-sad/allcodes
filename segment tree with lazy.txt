@@ -1,0 +1,67 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=100005;
+int n,m,x,y,l,r,q,a[M];
+ll seg[4*M],lazy[4*M];
+void fix(int i,int s,int e){
+    if(!lazy[i])return;
+    seg[i]=
+    if(s!=e){
+        lazy[2*i]+=lazy[i];
+        lazy[2*i+1]+=lazy[i];
+    }
+    lazy[i]=0;
+}
+void update(int i,int s,int e){
+    fix(i,s,e);
+    if(s>e||s>r||e<l){return;}
+    if(s>=l&&e<=r){
+        seg[i]=
+        fix(i,s,e);
+        return;
+    }
+    int mid=s+e>>1;
+    update(2*i,s,mid);
+    update(2*i+1,mid+1,e);
+    seg[i]=seg[2*i]+seg[2*i+1];
+}
+ll get(int i,int s,int e){
+    fix(i,s,e);
+    if(s>r||e<l)return 0;
+    if(s>=l&&e<=r){
+    	return seg[i];
+    }
+    int mid=s+e>>1;
+    return(get(2*i,s,mid)+get(2*i+1,mid+1,e));
+}
+void build(int i,int s,int e){
+	if(s==e){
+		seg[i]=a[s];
+		return;
+	}
+	int mid=s+e>>1;
+	build(i*2,s,mid);
+	build(i*2+1,mid+1,e);
+	seg[i]=seg[i*2]+seg[i*2+1];
+
+}
+int main(){
+	cin>>n;
+	for(int i=1;i<=n;i++)scanf("%d",&a[i]);
+	build(1,1,n);
+	cin>>q;
+	while(q--){
+		int t;
+		scanf("%d%d%d",&t,&l,&r);
+		if(!t){
+			update(1,1,n);
+		}
+		else{
+			printf("%lld\n",get(1,1,n));
+		}
+	}
+    return 0;
+} 

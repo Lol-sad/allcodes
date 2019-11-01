@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+#define mp make_pair
+#define pb push_back
+const int M=200005;
+int n,m,x,y,cnt=1;
+ll sum,t;
+char z[M];
+string s,k;
+struct node{
+    int nxt[2],cnt;
+    node(){
+        cnt=0;
+        memset(nxt,-1,sizeof nxt);
+    }
+
+};
+node a[M*100];
+void put(){
+
+    int cur=0;
+    for(int i=0;i<s.size();i++){
+        if(a[cur].nxt[s[i]-'0']==-1){
+            a[cur].nxt[s[i]-'0']=++cnt;
+        }
+        cur=a[cur].nxt[s[i]-'0'];
+        a[cur].cnt++;
+    }
+}
+void rem(){
+    int cur=0;
+    for(int i=0;i<s.size();i++){
+        cur=a[cur].nxt[s[i]-'0'];
+        a[cur].cnt--;
+    }
+}
+ll get(){
+
+    k="";
+    int cur=0;
+    for(int i=0;i<s.size();i++){
+        int x=0;
+        if(s[i]=='0')x=1;
+        if(a[cur].nxt[x]==-1||!a[a[cur].nxt[x]].cnt){
+            k+=(!x+'0');
+            cur=a[cur].nxt[!x];
+        }
+        else cur=a[cur].nxt[x],k+=(x+'0');
+    }
+    ll ans=0,c=1;
+    for(int i=k.size()-1;i>=0;i--){
+        if(k[i]=='1')ans+=c;
+        c*=2;
+    }
+    return ans;
+
+}
+int main()
+{
+    cin>>m;
+    s="00000000000000000000000000000000";
+    put();
+    while(m--){
+        char c;
+        int z;
+        scanf("\n%c %d",&c,&z);
+        t=z;
+        s="";
+        while(z){
+            if(z%2)s+='1';
+            else s+='0';
+            z/=2;
+        }
+        int d=s.size();
+        for(int i=0;i<32-d;i++)
+            s+='0';
+        reverse(s.begin(),s.end());
+        if(c=='+')put();
+        else if(c=='-')rem();
+        else{
+            printf("%lld\n",get()^t);
+        }
+    }
+
+    return 0;
+}

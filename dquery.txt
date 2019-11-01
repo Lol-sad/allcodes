@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+ 
+using namespace std;
+#define pb push_back
+#define mp make_pair
+const int M=30001;
+int n,a[M],q,l,r,ans[200001],lst[1000006],temp,seg[4*M];
+vector<pair<int,pair<int,int> > >v;
+void update(int i,int s,int e){
+    if(s>r||e<l)return;
+    if(s==e){
+        seg[i]=temp;
+        return;
+    }
+    update(2*i,s,(s+e)/2);
+    update(2*i+1,(s+e)/2+1,e);
+    seg[i]=seg[2*i]+seg[2*i+1];
+ 
+ 
+}
+int get(int i,int s,int e){
+    if(s>r||e<l)return 0;
+ 
+    if(s>=l&&e<=r)
+        return seg[i];
+ 
+    return get(2*i,s,(s+e)/2)+get(2*i+1,(s+e)/2+1,e);
+   
+ 
+}
+ 
+int main()
+{
+    cin>>n;
+    for(int i=1;i<=n;i++)scanf("%d",&a[i]);
+    cin>>q;
+    for(int i=0;i<q;i++){
+        int x,y;
+        scanf("%d%d",&x,&y);
+        v.pb(mp(y,mp(x,i)));
+    }
+    sort(v.begin(),v.end());
+    int k=0;
+    memset(lst,-1,sizeof lst);
+    for(int i=0;i<q;i++){
+        int b=v[i].first,f=v[i].second.first,id=v[i].second.second;
+        while(k<b){
+            int x=a[++k];
+            if(lst[x]!=-1){
+                l=r=lst[x];
+                temp=0;
+                update(1,1,n);
+            }
+            lst[x]=k;
+            l=r=k;
+            temp=1;
+            update(1,1,n);
+        }
+        l=f;r=b;
+        ans[id]=get(1,1,n);
+    }
+    for(int i=0;i<q;i++)printf("%d\n",ans[i]);
+    return 0;
+}
+ 
